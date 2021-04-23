@@ -11,17 +11,15 @@ import (
 const (
 	defaultRealm        = "traefik"
 	authorizationHeader = "Authorization"
-	LdapUsernameKey     = "uid"
 	contentType         = "Content-Type"
-	testInfo		    = "abc"
 )
 
 // Config the plugin configuration.
 type Config struct {
-	Host        string `json:"host"`
-	Port        uint16 `json:"port"`
-	BaseDN      string `json:"baseDn"`
-	UsernameKey string `json:"usernameKey"`
+	Host        string `json:"host,omitempty" yaml:"host,omitempty"`
+	Port        uint16 `json:"port,omitempty" yaml:"port,omitempty"`
+	BaseDn      string `json:"baseDn,omitempty" yaml:"baseDn,omitempty"`
+	UsernameKey string `json:"usernameKey,omitempty" yaml:"usernameKey,omitempty"`
 }
 
 // CreateConfig creates the default plugin configuration.
@@ -33,13 +31,10 @@ type LdapAuth struct {
 	next   http.Handler
 	name   string
 	config *Config
-
-	// ...
 }
 
 // New created a new plugin.
 func New(ctx context.Context, next http.Handler, config *Config, name string) (http.Handler, error) {
-	// ...
 	return &LdapAuth{
 		name:   name,
 		next:   next,
@@ -49,10 +44,6 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 
 func (b *LdapAuth) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	user, password, ok := req.BasicAuth()
-	if user == testInfo && password == testInfo {
-		rw.WriteHeader(204)
-		return
-	}
 	if ok {
 		conn, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", b.config.Host, b.config.Port))
 		if err != nil {
@@ -61,7 +52,7 @@ func (b *LdapAuth) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 			defer conn.Close()
 			filter := fmt.Sprintf("((%s=%s))", b.config.UsernameKey, user)
 			attributes := []string{b.config.UsernameKey}
-			search := ldap.NewSearchRequest(b.config.BaseDN, ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false, filter, attributes, nil)
+			search := ldap.NewSearchRequest(b.config.BaseDn, ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false, filter, attributes, nil)
 			cur, err := conn.Search(search)
 			if err != nil || len(cur.Entries) != 1 {
 				ok = false

@@ -7,5 +7,7 @@ summary: |-
   LDAP-based auth
 
 testData:
-  Headers:
-    Authorization: Basic YWJjOmFiYw==
+  hosts: "test.host"
+  port: 389
+  baseDn: "dc=company"
+  usernameKey: "uid"
