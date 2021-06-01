@@ -1,4 +1,4 @@
-module penitence1992.com/traefik-ldap-plugin
+module github.com/Penitence1992/traefik-ldap-plugin
 
 go 1.15
 
