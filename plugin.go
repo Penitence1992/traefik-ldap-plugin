@@ -1,11 +1,12 @@
-package auth
+package traefik_ldap_plugin
 
 import (
 	"context"
 	"fmt"
-	"github.com/go-ldap/ldap/v3"
 	"net/http"
 	"net/url"
+
+	"github.com/go-ldap/ldap/v3"
 )
 
 const (
