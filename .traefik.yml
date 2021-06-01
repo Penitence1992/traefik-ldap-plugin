@@ -1,7 +1,7 @@
 displayName: LDAP Auth with Http Basic
 type: middleware
 
-import: github.com/Penitence1992/traefik-ldap-plugin
+import: penitence1992.com/traefik-ldap-plugin
 
 summary: |-
   LDAP-based auth
